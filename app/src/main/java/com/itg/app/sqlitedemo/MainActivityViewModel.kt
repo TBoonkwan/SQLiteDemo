@@ -50,25 +50,35 @@ class MainActivityViewModel(private val repository: MainRepository) : ViewModel(
                         CoroutineScope(Dispatchers.IO).launch {
 
                             val source = syncDataResponse.value
+
+                            data.forEach { data ->
+                                source?.filter {
+                                    it.title == data.title
+                                }?.map {
+                                    it.status = data.status
+                                }
+                            }
+
                             source?.let {
                                 it.addAll(data)
                             }
 
                             // delete all data
+
                             repository.deleteAll()
 
                             if (source.isNullOrEmpty()) {
-                                // insert data to db
+                                // insert data to d
                                 repository.insert(data)
                             } else {
                                 // compare data
-                                val distinct =
-                                    source.distinctBy { it.title } as MutableList<SyncDataResponse>
+                                val distinct = source.distinctBy { it.title } as MutableList<SyncDataResponse>
                                 repository.insert(distinct)
                             }
 
                             // get all data and show
-                            syncDataResponse.postValue(repository.getAll())
+                            val data = repository.getAll()
+                            syncDataResponse.postValue(data)
                         }
                     }
                 } else {
