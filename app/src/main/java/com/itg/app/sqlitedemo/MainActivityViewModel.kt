@@ -7,6 +7,7 @@ import com.itg.app.sqlitedemo.repository.MainRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,7 +28,9 @@ class MainActivityViewModel(private val repository: MainRepository) : ViewModel(
             // check data is not null
             if (!data.isNullOrEmpty()) {
                 // show data to view
-                syncDataResponse.postValue(data)
+                withContext(Dispatchers.Main) {
+                    syncDataResponse.value = data
+                }
             }
         }
 
@@ -49,12 +52,15 @@ class MainActivityViewModel(private val repository: MainRepository) : ViewModel(
                     data?.let {
                         CoroutineScope(Dispatchers.IO).launch {
 
-                            val source = syncDataResponse.value
+                            // delete all data
+                            repository.deleteAll()
 
+                            val source = syncDataResponse.value
                             data.forEach { data ->
                                 source?.filter {
-                                    it.title == data.title
+                                    it.retailerId == data.retailerId
                                 }?.map {
+                                    it.title = data.title
                                     it.status = data.status
                                 }
                             }
@@ -63,22 +69,21 @@ class MainActivityViewModel(private val repository: MainRepository) : ViewModel(
                                 it.addAll(data)
                             }
 
-                            // delete all data
-
-                            repository.deleteAll()
-
                             if (source.isNullOrEmpty()) {
                                 // insert data to d
                                 repository.insert(data)
                             } else {
                                 // compare data
-                                val distinct = source.distinctBy { it.title } as MutableList<SyncDataResponse>
+                                val distinct =
+                                    source.distinctBy { it.retailerId } as MutableList<SyncDataResponse>
                                 repository.insert(distinct)
                             }
 
                             // get all data and show
                             val data = repository.getAll()
-                            syncDataResponse.postValue(data)
+                            withContext(Dispatchers.Main) {
+                                syncDataResponse.value = data
+                            }
                         }
                     }
                 } else {
