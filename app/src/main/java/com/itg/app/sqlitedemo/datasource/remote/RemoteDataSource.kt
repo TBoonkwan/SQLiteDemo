@@ -9,7 +9,10 @@ import retrofit2.Callback
  */
 class RemoteDataSource(private val apiClient: ApiClient) {
 
-    fun getRemoteDataSource(callback: Callback<MutableList<SyncDataResponse>>) {
-        apiClient.syncData().enqueue(callback)
+    fun getRemoteDataSource(
+        action: String,
+        callback: Callback<MutableList<SyncDataResponse>>
+    ) {
+        apiClient.run { syncData(action).enqueue(callback) }
     }
 }

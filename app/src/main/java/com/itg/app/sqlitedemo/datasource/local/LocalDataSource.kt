@@ -1,5 +1,6 @@
 package com.itg.app.sqlitedemo.datasource.local
 
+import com.itg.app.sqlitedemo.dao.SyncDataDAO
 import com.itg.app.sqlitedemo.entities.SyncDataResponse
 import com.itg.app.sqlitedemo.repository.DAORepository
 

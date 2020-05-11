@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.itg.app.sqlitedemo.di.appModules
+import com.itg.app.sqlitedemo.di.databaseModules
 import com.itg.app.sqlitedemo.di.networkModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -21,7 +22,7 @@ class BaseApplication : MultiDexApplication() {
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@BaseApplication)
-            modules(listOf(appModules, networkModules))
+            modules(listOf(appModules, networkModules, databaseModules))
         }
     }
 }

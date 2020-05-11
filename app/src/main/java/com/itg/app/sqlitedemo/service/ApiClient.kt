@@ -6,5 +6,5 @@ package com.itg.app.sqlitedemo.service
  */
 class ApiClient(private val service: ApiService) {
 
-    fun syncData() = service.syncData()
+    fun syncData(action: String) = service.syncData(action)
 }

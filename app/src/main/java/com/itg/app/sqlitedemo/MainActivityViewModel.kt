@@ -17,21 +17,26 @@ import retrofit2.Response
 class MainActivityViewModel(private val repository: MainRepository) : ViewModel() {
 
     val syncDataResponse: MutableLiveData<MutableList<SyncDataResponse>> = MutableLiveData()
+    val error: MutableLiveData<String> = MutableLiveData()
 
-    fun syncData() {
+    fun syncData(action: String) {
 
         CoroutineScope(Dispatchers.IO).launch {
+            // get data from db
             val data = repository.getAll()
+            // check data is not null
             if (!data.isNullOrEmpty()) {
+                // show data to view
                 syncDataResponse.postValue(data)
             }
         }
 
-        fetchData()
+        getDataWithRemoteDataSource(action = action)
     }
 
-    private fun fetchData() {
-        repository.getRemoteDataSource(object : Callback<MutableList<SyncDataResponse>> {
+    private fun getDataWithRemoteDataSource(action: String) {
+        // get data from api with action
+        repository.getRemoteDataSource(action, object : Callback<MutableList<SyncDataResponse>> {
             override fun onFailure(call: Call<MutableList<SyncDataResponse>>, t: Throwable) {
             }
 
@@ -49,19 +54,25 @@ class MainActivityViewModel(private val repository: MainRepository) : ViewModel(
                                 it.addAll(data)
                             }
 
+                            // delete all data
                             repository.deleteAll()
 
                             if (source.isNullOrEmpty()) {
+                                // insert data to db
                                 repository.insert(data)
                             } else {
+                                // compare data
                                 val distinct =
                                     source.distinctBy { it.title } as MutableList<SyncDataResponse>
                                 repository.insert(distinct)
                             }
 
+                            // get all data and show
                             syncDataResponse.postValue(repository.getAll())
                         }
                     }
+                } else {
+                    error.value = response.errorBody()?.string()
                 }
             }
         })

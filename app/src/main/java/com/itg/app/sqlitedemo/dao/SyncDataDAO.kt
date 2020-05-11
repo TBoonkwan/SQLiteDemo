@@ -1,4 +1,4 @@
-package com.itg.app.sqlitedemo.datasource.local
+package com.itg.app.sqlitedemo.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

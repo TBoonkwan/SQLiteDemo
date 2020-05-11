@@ -2,7 +2,7 @@ package com.itg.app.sqlitedemo.app
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.itg.app.sqlitedemo.datasource.local.SyncDataDAO
+import com.itg.app.sqlitedemo.dao.SyncDataDAO
 import com.itg.app.sqlitedemo.entities.SyncDataResponse
 
 /**
