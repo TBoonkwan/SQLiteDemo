@@ -69,9 +69,9 @@ class MainActivity : AppCompatActivity() {
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bindViewHolder(syncDataResponse: SyncDataResponse) {
-            view.title.text = syncDataResponse.title
-            view.retailId.text = syncDataResponse.retailerId
-            view.status.text = syncDataResponse.status
+            view.title.text = "Title : ${syncDataResponse.title}"
+            view.retailId.text = "RetailerId : ${syncDataResponse.retailerId}"
+            view.status.text = "Status : ${syncDataResponse.status}"
         }
 
     }
